@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>几何体</title>
+</head>
+
+<body onload="init()">
+    <canvas id="mainCanvas" width="500px" height="500px"></canvas>
+    <script src="./three.js"></script>
+    <script>
+        function init() {
+            var renderer = new THREE.WebGLRenderer({
+                canvas: document.getElementById('mainCanvas')
+            });
+            renderer.setClearColor(0x000000);
+            var scene = new THREE.Scene();
+            var camera = new THREE.OrthographicCamera(-5, 5, 5, -5, 0.1, 100);
+            camera.position.set(25, 25, 25);
+            camera.lookAt(new THREE.Vector3(0, 0, 0));
+            scene.add(camera);
+            var material = new THREE.MeshBasicMaterial({
+                color: 0xffff00,
+                wireframe: true
+            });
+            // var geometry = drawCube(material);
+            // var geometry = drawPlane(material);
+            // var geometry = drawSphere(material);
+            // var geometry = drawCircle(material);
+            var geometry = drawCylinder(material);
+            scene.add(geometry);
+            renderer.render(scene, camera);
+        }
+
+        // 立方体 THREE.CubeGeometry(width, height, depth, widthSegments, heightSegments, depthSegments)
+        function drawCube(material) {
+            var cube = new THREE.Mesh(new THREE.CubeGeometry(1, 2, 3, 2, 2, 3), material);
+            return cube;
+        }
+        // 平面 THREE.PlaneGeometry(width, height, widthSegments, heightSegments)
+        function drawPlane(material) {
+            var plane = new THREE.Mesh(new THREE.PlaneGeometry(1, 1, 2, 2), material);
+            return plane;
+        }
+        // 球体
+        // THREE.SphereGeometry(radius, segmentsWidth, segmentsHeight, phiStart, phiLength, thetaStart, thetaLength)
+        function drawSphere(material) {
+            // var plane = new THREE.Mesh(new THREE.SphereGeometry(3, 12, 12), material);
+            var plane = new THREE.Mesh(new THREE.SphereGeometry(3, 12, 12, Math.PI * 2, Math.PI / 6), material);
+            return plane;
+        }
+        // 圆形 
+        // THREE.CircleGeometry(radius, segments, thetaStart, thetaLength)
+        function drawCircle(material) {
+            var circle = new THREE.Mesh(new THREE.CircleGeometry(3, 18, Math.PI / 3, Math.PI / 3 * 4), material);
+            return circle;
+        }
+        // 圆柱体 
+        // THREE.CylinderGeometry(radiusTop, radiusBottom, height, radiusSegments, heightSegments, openEnded)
+        function drawCylinder(material) {
+            var cylinder = new THREE.Mesh(new THREE.CylinderGeometry(2, 2, 4, 18, 3), material);
+            return cylinder;
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Camera</title>
+</head>
+
+<body onload="init()">
+    <canvas id="mainCanvas" width="500px" height="500px"></canvas>
+    <script src="./three.js"></script>
+    <script>
+        // 正交照相机
+        // function init() {
+        //     var renderer = new THREE.WebGLRenderer({
+        //         canvas: document.getElementById('mainCanvas')
+        //     });
+        //     renderer.setClearColor(0x000000);
+        //     var scene = new THREE.Scene();
+        //     var camera = new THREE.OrthographicCamera(-2, 2, 2, -2, 1, 10);
+        //     // camera.position.set(0, 0, 5);
+        //     // 改变照相机位置 正方形向左偏移
+        //     // camera.position.set(1, 0, 5);
+        //     // 仰角
+        //     camera.position.set(4, -3, 5); 
+        //     // 照相机沿z轴负方向观察 通过lookAt函数让他看向原点
+        //     camera.lookAt(new THREE.Vector3(0, 0, 0));
+        //     scene.add(camera);
+        //     var cube = new THREE.Mesh(new THREE.CubeGeometry(1, 1, 1),
+        //         new THREE.MeshBasicMaterial({
+        //             color: 0xff0000,
+        //             wireframe: true
+        //         })
+        //     )
+        //     scene.add(cube);
+        //     renderer.render(scene, camera);
+        // }
+        
+        // 透视照相机
+        // THREE.PerspectiveCamera(fov, aspect, near, far)
+        function init(){
+            var renderer = new THREE.WebGLRenderer({
+                canvas: document.getElementById('mainCanvas')
+            });
+            renderer.setClearColor(0x000000);
+            var scene = new THREE.Scene();
+            // far 角度变大 图形变小
+            var camera = new THREE.PerspectiveCamera(45, 500/500, 1, 10);
+            camera.position.set(0,0,5);
+            scene.add(camera);
+            var cube = new THREE.Mesh(new THREE.CubeGeometry(1,1,1),
+                new THREE.MeshBasicMaterial({
+                    color: 0xff0000,
+                    wireframe: true
+                })
+            )
+            scene.add(cube);
+            renderer.render(scene, camera);
+        }
+
+    </script>
+</body>
+
+</html>

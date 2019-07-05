@@ -1,0 +1,38 @@
+<html>
+	<head>
+		<title>My first Three.js app</title>
+		<style>
+			body { margin: 0; }
+			canvas { width: 100%; height: 100% }
+		</style>
+	</head>
+	<body>
+		<script src="./three.js"></script>
+		<script>
+			var scene = new THREE.Scene();  //场景
+			var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );  //相机
+
+			var renderer = new THREE.WebGLRenderer();  //渲染器
+			renderer.setSize( window.innerWidth, window.innerHeight );
+			document.body.appendChild( renderer.domElement );
+
+			var geometry = new THREE.BoxGeometry( 1, 1, 1 ); //长宽高
+			var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } ); //样式
+			var cube = new THREE.Mesh( geometry, material ); //组合
+			scene.add( cube );
+
+			camera.position.z = 5;
+
+			var render = function () {
+				requestAnimationFrame( render ); //执行render渲染
+
+				cube.rotation.x += 0.1;
+				cube.rotation.y += 0.1;
+
+				renderer.render(scene, camera);
+			};
+
+			render(); //执行render渲染 ,这里调用2次相当于递归了
+		</script>
+	</body>
+</html>
