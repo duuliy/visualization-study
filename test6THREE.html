@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+    </style>
+</head>
+
+<body onload="init()">
+    <canvas id="mainCanvas" width="500px" height="500px"></canvas>
+    <script src="./three.js"></script>
+    <script>
+        //第二种方式渲染
+        function init() {
+
+            var renderer = new THREE.WebGLRenderer({
+                canvas: document.getElementById('mainCanvas')
+            });
+
+            var scene = new THREE.Scene();
+
+            var camera = new THREE.PerspectiveCamera(45, 4 / 3, 1, 1000);
+            camera.position.set(0, 0, 5);
+            scene.add(camera);
+
+            var cube = new THREE.Mesh(new THREE.CubeGeometry(1, 2, 3),
+                new THREE.MeshBasicMaterial({
+                    color: 'blue'
+                })
+            );
+            scene.add(cube);
+
+            renderer.render(scene, camera)
+
+        }
+    </script>
+</body>
+
+</html>
