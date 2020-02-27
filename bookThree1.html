@@ -15,6 +15,9 @@
   <script src="http://www.yanhuangxueyuan.com/versions/threejsR92/build/three.js"></script>
   <!-- <script src="./three.js"></script> -->
   <!-- <script src="http://www.yanhuangxueyuan.com/threejs/build/three.js"></script> -->
+
+  <!-- 三位渲染 -->
+  <script src="http://www.yanhuangxueyuan.com/threejs/examples/js/controls/OrbitControls.js"></script>
 </head>
 
 <body>
@@ -64,7 +67,33 @@
     renderer.setClearColor( 0xb9d3ff, 1 ); //设置背景颜色
     document.body.appendChild( renderer.domElement ); //body元素中插入canvas对象
     //执行渲染操作   指定场景、相机作为参数
-    renderer.render( scene, camera );
+    // renderer.render( scene, camera );
+
+    // 渲染函数
+    // function render() {
+    //   renderer.render( scene, camera ); //执行渲染操作
+    //   mesh.rotateY( 0.01 ); //每次绕y轴旋转0.01弧度
+    //   requestAnimationFrame( render );
+    // }
+    // //间隔20ms周期性调用函数fun,20ms也就是刷新频率是50FPS(1s/20ms)，每秒渲染50次
+    // render()
+
+    // function render() {
+    //   renderer.render( scene, camera ); //执行渲染操作
+    // }
+    // render();
+    // var controls = new THREE.OrbitControls( camera, renderer.domElement ); //创建控件对象
+    // controls.addEventListener( 'change', render ); //监听鼠标、键盘事件
+
+    function render() {
+      renderer.render( scene, camera ); //执行渲染操作
+      // mesh.rotateY(0.01);//每次绕y轴旋转0.01弧度
+      requestAnimationFrame( render ); //请求再次执行渲染函数render
+    }
+    render();
+    var controls = new THREE.OrbitControls( camera ); //创建控件对象
+    // 已经通过requestAnimationFrame(render);周期性执行render函数，没必要再通过监听鼠标事件执行render函数
+    // controls.addEventListener('change', render)
   </script>
 </body>
 
