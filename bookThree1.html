@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>第一个three.js文件_WebGL三维场景</title>
+  <title>three.js文件_WebGL三维场景的学习</title>
   <style>
     body {
       margin: 0;
@@ -31,6 +31,16 @@
      */
     // var geometry = new THREE.SphereGeometry(60, 40, 40); //创建一个球体几何对象
     var geometry = new THREE.BoxGeometry( 100, 100, 100 ); //创建一个立方体几何对象Geometry
+    // 圆柱  参数：圆柱面顶部、底部直径50,50   高度100  圆周分段数
+    // var geometry = new THREE.CylinderGeometry( 50, 50, 100, 25 );
+    // 正八面体
+    // var geometry = new THREE.OctahedronGeometry( 50 );
+    // 正十二面体
+    // var geometry = new THREE.DodecahedronGeometry( 50 );
+    // 正二十面体
+    var geometry2 = new THREE.IcosahedronGeometry( 50 ); //三维坐标系
+    // var axisHelper = new THREE.AxisHelper( 250 );
+    // scene.add( axisHelper );  
     var material = new THREE.MeshLambertMaterial( {
       color: 0x0000ff
     } ); //材质对象Material
