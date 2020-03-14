@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>three.js世界坐标系的学习</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      /* 隐藏body窗口区域滚动条 */
+    }
+  </style>
+  <!--引入three.js三维引擎-->
+  <script src="http://www.yanhuangxueyuan.com/versions/threejsR92/build/three.js"></script>
+  <!-- <script src="./three.js"></script> -->
+  <!-- <script src="http://www.yanhuangxueyuan.com/threejs/build/three.js"></script> -->
+
+  <!-- 三维渲染 -->
+  <script src="http://www.yanhuangxueyuan.com/threejs/examples/js/controls/OrbitControls.js"></script>
+</head>
+
+<body>
+  <script>
+    /**
+     * 创建场景对象Scene
+     */
+    var scene = new THREE.Scene();
+
+
+    var geometry = new THREE.SphereGeometry( 60, 40, 40 ); //创建一个球体几何对象
+    var material = new THREE.MeshLambertMaterial( {
+      color: 0x0000ff,
+      opacity: 0.7,
+      transparent: true
+    } ); //材质对象Material
+    var mesh = new THREE.Mesh( geometry, material );
+    // mesh的本地坐标设置为(50, 0, 0)
+    mesh.position.set( 50, 0, 0 );
+    var group = new THREE.Group();
+    // group本地坐标设置和mesh一样设置为(50, 0, 0)
+    // mesh父对象设置position会影响得到mesh的世界坐标
+    group.position.set( 50, 0, 0 );
+    group.add( mesh );
+    scene.add( group );
+
+    // .position属性获得本地坐标
+    console.log( '本地坐标', mesh.position );
+
+    // getWorldPosition()方法获得世界坐标
+    //该语句默认在threejs渲染的过程中执行,如果渲染之前想获得世界矩阵属性、世界位置属性等属性，需要通过代码更新
+    scene.updateMatrixWorld( true );
+    var worldPosition = new THREE.Vector3();
+    mesh.getWorldPosition( worldPosition );
+    console.log( '世界坐标', worldPosition );
+  </script>
+</body>
+
+</html>
