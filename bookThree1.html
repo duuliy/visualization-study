@@ -16,7 +16,7 @@
   <!-- <script src="./three.js"></script> -->
   <!-- <script src="http://www.yanhuangxueyuan.com/threejs/build/three.js"></script> -->
 
-  <!-- 三位渲染 -->
+  <!-- 三维渲染 -->
   <script src="http://www.yanhuangxueyuan.com/threejs/examples/js/controls/OrbitControls.js"></script>
 </head>
 
@@ -29,7 +29,7 @@
     /**
      * 创建网格模型
      */
-    // var geometry = new THREE.SphereGeometry(60, 40, 40); //创建一个球体几何对象
+    // var geometry = new THREE.SphereGeometry( 60, 40, 40 ); //创建一个球体几何对象
     var geometry = new THREE.BoxGeometry( 100, 100, 100 ); //创建一个立方体几何对象Geometry
     // 圆柱  参数：圆柱面顶部、底部直径50,50   高度100  圆周分段数
     // var geometry = new THREE.CylinderGeometry( 50, 50, 100, 25 );
@@ -50,15 +50,30 @@
     var material = new THREE.MeshPhongMaterial( { //高光
       color: 0x0000ff,
       specular: 0x4488ee,
-      shininess: 12
+      shininess: 12,
+      // transparent设置为true，开启透明，否则opacity不起作用
+      transparent: true,
+      // 设置材质透明度
+      opacity: 0.4,
+      wireframe: true //网格模型以线条的模式渲染
     } ); //材质对象
 
-    //  MeshBasicMaterial	基础网格材质，不受光照影响的材质
+    // PointsMaterial  点材质
+    // LineBasicMaterial 线
+    // LineDashedMaterial 虚线
+    // MeshBasicMaterial	基础网格材质，不受光照影响的材质
     // MeshLambertMaterial	Lambert网格材质，与光照有反应，漫反射
     // MeshPhongMaterial	高光Phong材质,与光照有反应
     // MeshStandardMaterial	PBR物理材质，相比较高光Phong材质可以更好的模拟金属、玻璃等效果
-    var mesh = new THREE.Mesh( geometry, material ); //网格模型对象Mesh
-    scene.add( mesh ); //网格模型添加到场景中
+    var mesh = new THREE.Mesh( geometry, material ); //网格模型对象Mesh  实体
+    // var mesh = new THREE.Line( geometry, material );
+    // Points 点材质渲染 一个个的点
+    // Line  线
+
+    var mesh2 = mesh.clone(); //克隆网格模型
+    mesh.translateX( 200 ); //网格模型mesh平移
+
+    scene.add( mesh, mesh2 ); //网格模型添加到场景中
     /**
      * 光源设置
      */
