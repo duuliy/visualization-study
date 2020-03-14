@@ -38,12 +38,25 @@
     // 正十二面体
     // var geometry = new THREE.DodecahedronGeometry( 50 );
     // 正二十面体
-    var geometry2 = new THREE.IcosahedronGeometry( 50 ); //三维坐标系
+    // var geometry2 = new THREE.IcosahedronGeometry( 50 ); //三维坐标系
     // var axisHelper = new THREE.AxisHelper( 250 );
     // scene.add( axisHelper );  
-    var material = new THREE.MeshLambertMaterial( {
-      color: 0x0000ff
-    } ); //材质对象Material
+
+    // var material = new THREE.MeshLambertMaterial( {
+    //   color: 0x0000ff,
+    //   opacity: 0.7,
+    //   transparent: true
+    // } ); //材质对象Material
+    var material = new THREE.MeshPhongMaterial( { //高光
+      color: 0x0000ff,
+      specular: 0x4488ee,
+      shininess: 12
+    } ); //材质对象
+
+    //  MeshBasicMaterial	基础网格材质，不受光照影响的材质
+    // MeshLambertMaterial	Lambert网格材质，与光照有反应，漫反射
+    // MeshPhongMaterial	高光Phong材质,与光照有反应
+    // MeshStandardMaterial	PBR物理材质，相比较高光Phong材质可以更好的模拟金属、玻璃等效果
     var mesh = new THREE.Mesh( geometry, material ); //网格模型对象Mesh
     scene.add( mesh ); //网格模型添加到场景中
     /**
@@ -53,9 +66,11 @@
     var point = new THREE.PointLight( 0xffffff );
     point.position.set( 400, 200, 300 ); //点光源位置
     scene.add( point ); //点光源添加到场景中
-    //环境光
+    //环境光  环境光颜色与网格模型的颜色进行RGB进行乘法运算
     var ambient = new THREE.AmbientLight( 0x444444 );
     scene.add( ambient );
+    // DirectionalLight	平行光，比如太阳光
+    // SpotLight	聚光源
     // console.log(scene)
     // console.log(scene.children)
     /**
