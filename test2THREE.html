@@ -1,59 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-    <style>
-    
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+
+  </style>
 </head>
+
 <body>
-    <script src="./three.js"></script>
-    <script>
+  <script src="./three.js"></script>
+  <script>
+    //near参数 近平面距离相机中心点的垂直距离。近平面是左边竖着的那个平面
+    //far：远平面距离相机中心点的垂直距离。远平面是右边竖着的那个平面。
 
-        //near参数 近平面距离相机中心点的垂直距离。近平面是左边竖着的那个平面
-        //far：远平面距离相机中心点的垂直距离。远平面是右边竖着的那个平面。
+    //矩阵变换 :
+    //修改对象的 位置（position）, 四元数（quaternion）, 和缩放（scale） 属性
+    //object.position.copy(start_position);
+    //object.quaternion.copy(quaternion);
 
-        //矩阵变换 :
-        //修改对象的 位置（position）, 四元数（quaternion）, 和缩放（scale） 属性
-        //object.position.copy(start_position);
-        //object.quaternion.copy(quaternion);
+    //缺省情况下，matrixAutoUpdate 属性被设置为 true，这样矩阵将会被自动重新计算。
 
-        //缺省情况下，matrixAutoUpdate 属性被设置为 true，这样矩阵将会被自动重新计算。
-        
-        //object.matrixAutoUpdate = false;
+    //object.matrixAutoUpdate = false;
 
-        //手动更新矩阵：
-        //object.updateMatrix();
+    //手动更新矩阵：
+    //object.updateMatrix();
 
-        //全是矩阵的方法
-        //object.matrix.setRotationFromQuaternion(quaternion);
-		//object.matrix.setPosition(start_position);
-        //object.matrixAutoUpdate = false;
-        
-
-        //******创建VR****/
-
-        // <script src="/path/to/WebVR.js" />
-        //document.body.appendChild( WEBVR.createButton( renderer ) ); //它创建一个指示虚拟现实兼容性的按钮
-        //renderer.vr.enabled = true; //告诉你的渲染器 WebGLRenderer 实例来启用VR渲染。
-        //renderer.render( scene, camera ); //动画循环
-        //renderer.setAnimationLoop( function () { 
-        //} );
+    //全是矩阵的方法
+    //object.matrix.setRotationFromQuaternion(quaternion);
+    //object.matrix.setPosition(start_position);
+    //object.matrixAutoUpdate = false;
 
 
-        //****************混合方程***************/
-        //加法方程（THREE.AddEquation）
-        //减法方程（THREE.SubtractEquation）
-        //反向减法方程（THREE.ReverseSubtractEquation）
-        //最小方程（THREE.MinEquation）
-        //最大方程（THREE.MaxEquation）
+    //******创建VR****/
+
+    // <script src="/path/to/WebVR.js" />
+    // document.body.appendChild( WEBVR.createButton( renderer ) ); //它创建一个指示虚拟现实兼容性的按钮
+    // renderer.vr.enabled = true; //告诉你的渲染器 WebGLRenderer 实例来启用VR渲染。
+    // renderer.render( scene, camera ); //动画循环
+    // renderer.setAnimationLoop( function () { 
+    // } );
 
 
-
-        
-    </script>
+    //****************混合方程***************/
+    //加法方程（THREE.AddEquation）
+    //减法方程（THREE.SubtractEquation）
+    //反向减法方程（THREE.ReverseSubtractEquation）
+    //最小方程（THREE.MinEquation）
+    //最大方程（THREE.MaxEquation）
+  </script>
 </body>
+
 </html>
