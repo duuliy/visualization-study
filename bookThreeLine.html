@@ -24,7 +24,7 @@
   <script src="http://www.yanhuangxueyuan.com/threejs/examples/js/controls/OrbitControls.js"></script>
   <script>
     var renderer = new THREE.WebGLRenderer();
-    renderer.setSize( window.innerWidth, window.innerHeight );
+    renderer.setSize( window.innerWidth / 2, window.innerHeight / 2 );
     document.body.appendChild( renderer.domElement );
 
     var camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 500 );
@@ -34,18 +34,92 @@
     var scene = new THREE.Scene();
 
 
-    var material = new THREE.LineBasicMaterial( {
-      color: 0x0000ff
-    } );
+    // var material = new THREE.LineBasicMaterial( {
+    //   color: 0x0000ff
+    // } );
 
-    var geometry = new THREE.Geometry(); //几何体的方法 Vector3三维向量
-    geometry.vertices.push( new THREE.Vector3( -20, 0, 0 ) ); //顶点1坐标
-    geometry.vertices.push( new THREE.Vector3( 0, 20, 0 ) ); //顶点2坐标
-    geometry.vertices.push( new THREE.Vector3( 20, 0, 0 ) ); //顶点3坐标
-    geometry.vertices.push( new THREE.Vector3( 0, 0, 20 ) ); //顶点4坐标
-    var line = new THREE.Line( geometry, material );
+    /**
+     * 画线和管道
+     */
 
-    scene.add( line );
+    // var geometry = new THREE.Geometry(); //几何体的方法 Vector3三维向量
+    // geometry.vertices.push( new THREE.Vector3( -20, 0, 0 ) ); //顶点1坐标
+    // geometry.vertices.push( new THREE.Vector3( 0, 20, 0 ) ); //顶点2坐标
+    // geometry.vertices.push( new THREE.Vector3( 20, 0, 0 ) ); //顶点3坐标
+    // geometry.vertices.push( new THREE.Vector3( 0, 0, 20 ) ); //顶点4坐标
+    // var line = new THREE.Line( geometry, material );
+
+    //创建管道成型的路径(3D样条曲线)
+    // var path = new THREE.CatmullRomCurve3( [
+    //   new THREE.Vector3( -10, -50, -50 ),
+    //   new THREE.Vector3( 10, 0, 0 ),
+    //   new THREE.Vector3( 8, 50, 50 ),
+    //   new THREE.Vector3( -5, 0, 100 )
+    // ] );
+    // path:路径   40：沿着轨迹细分数  2：管道半径   25：管道截面圆细分数  false 是否闭合
+
+    // var path = new THREE.LineCurve3( new THREE.Vector3( 0, 100, 0 ), new THREE.Vector3( 0, 0, 0 ) );
+    // // 直线
+    // var geometry = new THREE.TubeGeometry( path, 40, 2, 25, false );
+
+    //旋转成形
+    // var shape = new THREE.Shape(); //创建Shape对象
+    // var points = [ //定位定点
+    //   new THREE.Vector2( 50, 60 ),
+    //   new THREE.Vector2( 5, 0 ),
+    //   new THREE.Vector2( 50, -60 )
+    // ];
+    // shape.splineThru( points ); //顶点带入样条插值计算函数
+    // var splinePoints = shape.getPoints( 20 ); //插值计算细分数20
+    // var geometry = new THREE.LatheGeometry( splinePoints, 30 ); //旋转造型
+
+    //轮廓填充
+    // 轮廓对象1
+    // var shape = new THREE.Shape();
+    // shape.arc( -50, 0, 30, 0, 2 * Math.PI );
+    // // 轮廓对象2
+    // var shape2 = new THREE.Shape();
+    // shape2.arc( 50, 0, 30, 0, 2 * Math.PI );
+    // // 轮廓对象3
+    // var shape3 = new THREE.Shape();
+    // shape3.arc( 0, 50, 30, 0, 2 * Math.PI );
+    // // 多个shape作为元素组成数组,每一个shpae可以理解为一个要填充的轮廓
+    // var geometry = new THREE.ShapeGeometry( [ shape, shape2, shape3 ], 30 );
+
+    /**
+     * 创建扫描网格模型
+     */
+    var shape = new THREE.Shape();
+    /**四条直线绘制一个矩形轮廓*/
+    shape.moveTo( 0, 0 ); //起点
+    shape.lineTo( 0, 10 ); //第2点
+    shape.lineTo( 10, 10 ); //第3点
+    shape.lineTo( 10, 0 ); //第4点
+    shape.lineTo( 0, 0 ); //第5点
+    /**创建轮廓的扫描轨迹(3D样条曲线)*/
+    var curve = new THREE.SplineCurve3( [
+      new THREE.Vector3( -10, -50, -50 ),
+      new THREE.Vector3( 10, 0, 0 ),
+      new THREE.Vector3( 8, 50, 50 ),
+      new THREE.Vector3( -5, 0, 100 )
+    ] );
+    var geometry = new THREE.ExtrudeGeometry( //拉伸造型
+      shape, //二维轮廓
+      //拉伸参数
+      {
+        bevelEnabled: false, //无倒角
+        extrudePath: curve, //选择扫描轨迹
+        steps: 50 //扫描方向细分数
+      }
+    );
+
+    var material = new THREE.PointsMaterial( {
+      color: 0x0000ff,
+      size: 5.0 //点对象像素尺寸
+    } ); //材质对象
+    var mesh = new THREE.Points( geometry, material );
+
+    scene.add( mesh );
     renderer.render( scene, camera );
   </script>
 </body>
