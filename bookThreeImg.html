@@ -41,36 +41,79 @@
       scene = new THREE.Scene();
 
 
-      // var geometry = new THREE.PlaneGeometry( 500, 300, 1, 1 );
-      // geometry.vertices[ 0 ].uv = new THREE.Vector2( 0, 0 );
-      // geometry.vertices[ 1 ].uv = new THREE.Vector2( 2, 0 );
-      // geometry.vertices[ 2 ].uv = new THREE.Vector2( 2, 2 );
-      // geometry.vertices[ 3 ].uv = new THREE.Vector2( 0, 2 );
+      // var geometry = new THREE.Geometry(); //创建一个空几何体对象
+      // /**顶点坐标(纹理映射位置)*/
+      // var p1 = new THREE.Vector3( 0, 0, 0 ); //顶点1坐标
+      // var p2 = new THREE.Vector3( 160, 0, 0 ); //顶点2坐标
+      // var p3 = new THREE.Vector3( 160, 80, 0 ); //顶点3坐标
+      // var p4 = new THREE.Vector3( 0, 80, 0 ); //顶点4坐标
+      // geometry.vertices.push( p1, p2, p3, p4 ); //顶点坐标添加到geometry对象
 
       // var geometry = new THREE.BoxGeometry( 100, 100, 100 ); //立方体
-      var geometry = new THREE.SphereGeometry( 60, 25, 25 ); //球体
-      // 纹理坐标怎么弄
-      var texture = THREE.ImageUtils.loadTexture( "./earth.jpg", null, function ( t ) {} );
-      var material = new THREE.MeshBasicMaterial( {
-        map: texture
-      } );
-      var mesh = new THREE.Mesh( geometry, material );
-      scene.add( mesh );
-
-      // 图片加载器
-      // var ImageLoader = new THREE.ImageLoader();
-      // // load方法回调函数，按照路径加载图片，返回一个html的元素img对象
-      // ImageLoader.load( './earth.jpg', function ( img ) {
-      //   // image对象作为参数，创建一个纹理对象Texture
-      //   var texture = new THREE.Texture( img );
-      //   // 下次使用纹理时触发更新
-      //   texture.needsUpdate = true;
-      //   var material = new THREE.MeshLambertMaterial( {
-      //     map: texture, //设置纹理贴图
-      //   } );
-      //   var mesh = new THREE.Mesh( geometry, material ); //网格模型对象Mesh
-      //   scene.add( mesh ); //网格模型添加到场景中
+      // var geometry = new THREE.SphereGeometry( 60, 25, 25 ); //球体
+      // // 纹理坐标怎么弄
+      // // 这个方式是异步的
+      // // var texture = THREE.ImageUtils.loadTexture( "./earth.jpg", null, function ( t ) {} );
+      // var textureLoader = new THREE.TextureLoader(); // 纹理加载器
+      // var texture = textureLoader.load( './earth.jpg' ); // 加载图片，返回Texture对象
+      // // // 设置阵列模式   默认ClampToEdgeWrapping  RepeatWrapping：阵列  镜像阵列：MirroredRepeatWrapping
+      // // texture.wrapS = THREE.RepeatWrapping;
+      // // texture.wrapT = THREE.RepeatWrapping;
+      // // // uv两个方向纹理重复数量
+      // // texture.repeat.set( 4, 2 );
+      // // 不设置重复  偏移范围-1~1
+      // texture.offset = new THREE.Vector2( 0.3, 0.1 )
+      // // 设置纹理旋转角度
+      // texture.rotation = Math.PI / 4;
+      // // 设置纹理的旋转中心，默认(0,0)
+      // texture.center.set( 0.5, 0.5 );
+      // var material_2 = new THREE.MeshBasicMaterial( {
+      //   map: texture,
+      //   // color: 0x0000ff,
       // } );
+      // var material_1 = new THREE.MeshPhongMaterial( {
+      //   color: 0xffff3f
+      // } )
+      // var materialArr = [ material_2, material_1, material_1, material_1, material_1, material_1 ];
+      // var mesh = new THREE.Mesh( geometry, materialArr );
+      // scene.add( mesh );
+
+      // 大型可视化或动态方式方便的方法
+      // // 创建一个加载threejs格式JSON文件的加载器
+      // var loader = new THREE.ObjectLoader();
+      // // TextureLoader创建一个纹理加载器对象，可以加载图片作为几何体纹理
+      // var textureLoader = new THREE.TextureLoader();
+      // loader.load( 'model.json', function ( obj ) {
+      //   console.log( obj );
+      //   scene.add( obj ); //加载返回的对象插入场景中
+      //   // 执行load方法，加载纹理贴图成功后，返回一个纹理对象Texture
+      //   textureLoader.load( 'Earth.png', function ( texture ) {
+      //     // 设置球体网格模型材质的map属性
+      //     obj.children[ 0 ].material.map = texture;
+      //     // 告诉threejs渲染器系统，材质对象的map属性已更新
+      //     obj.children[ 0 ].material.needsUpdate = true;
+      //   } )
+      // } )
+
+      /**
+       * 创建一个地面  不成功是什么原因
+       */
+      // var geometry = new THREE.PlaneGeometry( 1000, 1000 ); //矩形平面
+      // // 加载树纹理贴图
+      // var textureLoader = new THREE.TextureLoader(); // 纹理加载器
+      // var texture = textureLoader.load( './earth.jpg' ); // 加载图片，返回Texture对象
+      // // 设置阵列
+      // texture.wrapS = THREE.RepeatWrapping;
+      // texture.wrapT = THREE.RepeatWrapping;
+      // // uv两个方向纹理重复数量
+      // texture.repeat.set( 10, 10 );
+      // var material = new THREE.MeshLambertMaterial( {
+      //   map: texture,
+      // } );
+      // var mesh = new THREE.Mesh( geometry, material ); //网格模型对象Mesh
+      // scene.add( mesh ); //网格模型添加到场景中
+      // mesh.rotateX( -Math.PI / 2 );
+
 
       //
       window.addEventListener( 'resize', onWindowResize, false );
@@ -87,6 +130,7 @@
       requestAnimationFrame( animate );
       renderer.render( scene, camera );
     }
+    var controls = new THREE.OrbitControls( camera );
   </script>
 
 </body>
