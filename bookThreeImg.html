@@ -50,33 +50,36 @@
       // geometry.vertices.push( p1, p2, p3, p4 ); //顶点坐标添加到geometry对象
 
       // var geometry = new THREE.BoxGeometry( 100, 100, 100 ); //立方体
-      // var geometry = new THREE.SphereGeometry( 60, 25, 25 ); //球体
-      // // 纹理坐标怎么弄
-      // // 这个方式是异步的
-      // // var texture = THREE.ImageUtils.loadTexture( "./earth.jpg", null, function ( t ) {} );
-      // var textureLoader = new THREE.TextureLoader(); // 纹理加载器
-      // var texture = textureLoader.load( './earth.jpg' ); // 加载图片，返回Texture对象
-      // // // 设置阵列模式   默认ClampToEdgeWrapping  RepeatWrapping：阵列  镜像阵列：MirroredRepeatWrapping
-      // // texture.wrapS = THREE.RepeatWrapping;
-      // // texture.wrapT = THREE.RepeatWrapping;
-      // // // uv两个方向纹理重复数量
-      // // texture.repeat.set( 4, 2 );
-      // // 不设置重复  偏移范围-1~1
-      // texture.offset = new THREE.Vector2( 0.3, 0.1 )
-      // // 设置纹理旋转角度
-      // texture.rotation = Math.PI / 4;
-      // // 设置纹理的旋转中心，默认(0,0)
-      // texture.center.set( 0.5, 0.5 );
-      // var material_2 = new THREE.MeshBasicMaterial( {
-      //   map: texture,
-      //   // color: 0x0000ff,
-      // } );
-      // var material_1 = new THREE.MeshPhongMaterial( {
-      //   color: 0xffff3f
-      // } )
-      // var materialArr = [ material_2, material_1, material_1, material_1, material_1, material_1 ];
-      // var mesh = new THREE.Mesh( geometry, materialArr );
-      // scene.add( mesh );
+      var geometry = new THREE.SphereGeometry( 60, 25, 25 ); //球体
+      // 纹理坐标怎么弄
+      // 这个方式是异步的
+      // var texture = THREE.ImageUtils.loadTexture( "./earth.jpg", null, function ( t ) {} );
+      var textureLoader = new THREE.TextureLoader(); // 纹理加载器
+      var texture = textureLoader.load( './earth.jpg' ); // 加载图片，返回Texture对象
+      // // 设置阵列模式   默认ClampToEdgeWrapping  RepeatWrapping：阵列  镜像阵列：MirroredRepeatWrapping
+      // texture.wrapS = THREE.RepeatWrapping;
+      // texture.wrapT = THREE.RepeatWrapping;
+      // // uv两个方向纹理重复数量
+      // texture.repeat.set( 4, 2 );
+      // 不设置重复  偏移范围-1~1
+      texture.offset = new THREE.Vector2( 0.3, 0.1 )
+      // 设置纹理旋转角度
+      texture.rotation = Math.PI / 4;
+      // 设置纹理的旋转中心，默认(0,0)
+      texture.center.set( 0.5, 0.5 );
+      var material_2 = new THREE.MeshBasicMaterial( {
+        map: texture,
+        normalMap: texture, //法线贴图
+        // color: 0x0000ff,
+        //设置深浅程度，默认值(1,1)。
+        normalScale: new THREE.Vector2( 1.2, 1.2 )
+      } );
+      var material_1 = new THREE.MeshPhongMaterial( {
+        color: 0xffff3f
+      } )
+      var materialArr = [ material_2, material_1, material_1, material_1, material_1, material_1 ];
+      var mesh = new THREE.Mesh( geometry, material_2 );
+      scene.add( mesh );
 
       // 大型可视化或动态方式方便的方法
       // // 创建一个加载threejs格式JSON文件的加载器
