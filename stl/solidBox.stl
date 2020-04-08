@@ -1,0 +1,8 @@
+//三角面1
+   facet normal 0 0 -1    //三角形面法向量
+      outer loop
+         vertex 50 50 -50   //顶点位置
+         vertex 50 -50 -50  //顶点位置
+         vertex -50 50 -50  //顶点位置
+      endloop
+   endfacet

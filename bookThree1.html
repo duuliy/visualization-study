@@ -163,6 +163,8 @@
       requestAnimationFrame(render); //请求再次执行渲染函数render
     }
     render();
+//     // 局部渲染设置OrbitControls空间作用范围
+// var controls = new THREE.OrbitControls(camera, renderer.domElement);
     var controls = new THREE.OrbitControls(camera); //创建控件对象
     // 已经通过requestAnimationFrame(render);周期性执行render函数，没必要再通过监听鼠标事件执行render函数
     // controls.addEventListener('change', render)

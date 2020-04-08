@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>three.js文件_WebGL三维场景的学习</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            /* 隐藏body窗口区域滚动条 */
+        }
+    </style>
+    <!--引入three.js三维引擎-->
+    <script src="http://www.yanhuangxueyuan.com/versions/threejsR92/build/three.js"></script>
+    <!-- <script src="./three.js"></script> -->
+    <!-- <script src="http://www.yanhuangxueyuan.com/threejs/build/three.js"></script> -->
+
+    <!-- 三维渲染 -->
+    <script src="http://www.yanhuangxueyuan.com/threejs/examples/js/controls/OrbitControls.js"></script>
+    <!-- 其他文件模型加载 -->
+    <script src="http://www.yanhuangxueyuan.com/threejs/examples/js/loaders/STLLoader.js"></script>
+    <script src="http://www.yanhuangxueyuan.com/threejs/examples/js/loaders/OBJLoader.js"></script>
+    <script src="http://www.yanhuangxueyuan.com/threejs/examples/js/loaders/MTLLoader.js"></script>
+
+</head>
+
+<body>
+    <script>
+        /**
+         * 创建场景对象Scene
+         */
+        var scene = new THREE.Scene();
+        /**
+         * 创建网格模型
+         */
+        // var geometry = new THREE.SphereGeometry( 60, 40, 40 ); //创建一个球体几何对象
+        // var geometry = new THREE.BoxGeometry(100, 100, 100); //创建一个立方体几何对象Geometry
+        // 通过加载器ObjectLoader加载./marine_anims_core.json模型文件
+        // var loader = new THREE.ObjectLoader();
+        // loader.load("./marine_anims_core.json", function (obj) {
+        //     console.log(obj);//浏览器控制台查看加载返回的结果
+        //     scene.add(obj); //添加到场景中
+        // })
+
+        var typeAPI = {
+            MeshLambertMaterial: THREE.MeshLambertMaterial,
+            MeshBasicMaterial: THREE.MeshBasicMaterial,
+            MeshPhongMaterial: THREE.MeshPhongMaterial,
+            PointsMaterial: THREE.PointsMaterial,
+        }
+        // 创建一个文件加载器，该加载器是对异步加载的封装
+        // var loader = new THREE.FileLoader();
+        // loader.load('./json/modal1.json', function (elem) {
+
+        //     var obj = JSON.parse(elem);// 字符串转JSON对象
+
+        //     var geometry = new THREE.BoxGeometry(100, 100, 100);
+        //     /**
+        //      * 解析材质数据
+        //      */
+        //     // 根据type的值判断调用threejs的哪一个API
+        //     var material = new typeAPI[obj.type]();
+        //     // 从obj.color中提取颜色
+        //     // 16711935对应颜色0xFF00FF  255对应颜色0x0000FF
+        //     material.color.r = (obj.color >> 16 & 255) / 255; //获取颜色值R部分
+        //     material.color.g = (obj.color >> 8 & 255) / 255; //获取颜色值G部分
+        //     material.color.b = (obj.color & 255) / 255; //获取颜色值B部分
+
+        //     var mesh = new THREE.Mesh(geometry, material); //网格模型对象Mesh
+        //     scene.add(mesh); //网格模型添加到场景中
+        // })
+
+        // THREE.STLLoader创建一个加载器
+
+        // var loader = new THREE.STLLoader();
+        // loader.load('./stl/雪球金字塔1.stl', function (elem) {
+
+        //     // var obj = JSON.parse(elem);// 字符串转JSON对象
+        //     console.log(elem)
+
+        //     var geometry = new THREE.BoxGeometry(100, 100, 100);
+        //     /**
+        //      * 解析材质数据
+        //      */
+        //     var material = new THREE.MeshLambertMaterial({
+        //         color: 0x0000ff,
+        //     }); //材质对象Material
+        //     var mesh = new THREE.Mesh(elem, material); //网格模型对象Mesh
+        //     scene.add(mesh); //网格模型添加到场景中
+        // })
+
+        /**
+          * OBJ文件加载  只加载obj文件中的几何信息，不加载材质文件.mtl
+          */
+        var loader = new THREE.OBJLoader();
+        // 没有材质文件，系统自动设置Phong网格材质
+        var MTLLoader = new THREE.MTLLoader();//材质文件加载器
+        loader.load('./stl/file.obj', function (obj) {
+            // 控制台查看返回结构：包含一个网格模型Mesh的组Group
+            console.log(obj);
+            // 查看加载器生成的材质对象：MeshPhongMaterial
+            console.log(obj.children[0].material);
+            // obj.children[0].scale.set(20, 20, 20);//网格模型缩放
+            obj.children[0].geometry.center();//网格模型的几何体居中
+            obj.children[0].material.color.set(0xff0000);//设置材质颜色
+            scene.add(obj);
+        })
+        //材质文件加载方式
+        // MTLLoader.load('./立方体/box.mtl', function (materials) {
+        //     // 返回一个包含材质的对象MaterialCreator
+        //     console.log(materials);
+        //     //obj的模型会和MaterialCreator包含的材质对应起来
+        //     OBJLoader.setMaterials(materials);
+        //     OBJLoader.load('./stl/file.obj', function (obj) {
+        //         console.log(obj);
+        //         obj.scale.set(10, 10, 10); //放大obj组对象
+        //         scene.add(obj);//返回的组对象插入场景中
+        //     })
+        // })
+        /**
+         * 光源设置
+         */
+        //点光源
+        var point = new THREE.PointLight(0xffffff);
+        point.position.set(400, 200, 300); //点光源位置
+        scene.add(point); //点光源添加到场景中
+
+        var ambient = new THREE.AmbientLight(0x444444);
+        scene.add(ambient);
+
+        /**
+         * 相机设置
+         */
+        var width = window.innerWidth; //窗口宽度
+        var height = window.innerHeight; //窗口高度
+        var k = width / height; //窗口宽高比
+        var s = 400; //三维场景显示范围控制系数，系数越大，显示的范围越大
+        //创建相机对象
+
+
+        var camera = new THREE.OrthographicCamera(-s * k, s * k, s, -s, 1, 1000);  //正投影   项目中使用
+
+
+        camera.position.set(200, 300, 200); //设置相机位置 人的眼睛看屏幕的角度对比左手三维坐标系就能感知方向
+        camera.lookAt(scene.position); //设置相机方向(指向的场景对象)
+        /**
+         * 创建渲染器对象
+         */
+        var renderer = new THREE.WebGLRenderer();
+        renderer.setSize(width, height); //设置渲染区域尺寸
+        renderer.setClearColor(0xb9d3ff, 1); //设置背景颜色
+        document.body.appendChild(renderer.domElement); //body元素中插入canvas对象
+
+
+        function render() {
+            renderer.render(scene, camera); //执行渲染操作
+            // mesh.rotateY(0.01);//每次绕y轴旋转0.01弧度
+            requestAnimationFrame(render); //请求再次执行渲染函数render
+        }
+        render();
+        var controls = new THREE.OrbitControls(camera); //创建控件对象
+
+    </script>
+</body>
+
+</html>

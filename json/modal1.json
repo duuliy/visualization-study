@@ -1,0 +1,6 @@
+{
+    "type": "MeshLambertMaterial",
+    "MeshBasicMaterial": "MeshBasicMaterial",
+    "MeshPhongMaterial": "MeshPhongMaterial",
+    "PointsMaterial": "PointsMaterial"
+}
