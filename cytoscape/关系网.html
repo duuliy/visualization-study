@@ -19,29 +19,6 @@
     integrity="sha512-IawH7O9E5azuuGrjPfWpcrniP8gqS0BL9Dr0zw/1cK81cGSgBcABfJUgHi9YvychZt+5SkQYEFeCvBOs0tilxA=="
     crossorigin="anonymous"></script>
   <script>
-    const options = {
-      evtType: 'cxttap',
-      menuItems: [
-        {
-          id: 'remove', // ID of menu item
-          content: 'remove', // Display content of menu item
-          tooltipText: 'remove', // Tooltip text for menu item
-          image: { src: 'remove.svg', width: 12, height: 12, x: 6, y: 4 }, // menu icon
-          // Filters the elements to have this menu item on cxttap
-          // If the selector is not truthy no elements will have this menu item on cxttap
-          selector: 'node, edge',
-          onClickFunction: function () {
-            // The function to be executed on click
-            console.log('remove element')
-          },
-          disabled: false, // Whether the item will be created as disabled
-          show: true, // Whether the item will be shown or not
-          hasTrailingDivider: true, // Whether the item will have a trailing divider
-          coreAsWell: false, // Whether core instance have this item on cxttap
-          submenu: [], // Shows the listed menuItems as a submenu for this item. An item must have either submenu or onClickFunction or both.
-        },
-      ],
-    }
       let cy = cytoscape({
         name: 'duuliy',
         container: document.getElementById('cy'), //container的值为DOM容器，表示显示图表的位置
@@ -170,7 +147,6 @@
         console.log('node ' + node.id())
       })
 
-      // var instance = cy.contextMenus(options)
   </script>
 </body>
 
