@@ -5,147 +5,295 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
+  <nuxt-link to=""></nuxt-link>
+  <link rel="stylesheet" type="text/css" href="./cytoscape.js-navigator.css">
   <style>
+    body{
+      background-color: rgba(0,0,0,.1);
+    }
     #cy {
-      height: 600px;
-      width: 1000px;
+      height: 900px;
+      width: 1800px;
     }
   </style>
 </head>
 
 <body>
   <div id="cy"></div>
+  <div id="cy-nav"></div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.17.0/cytoscape.min.js"
     integrity="sha512-IawH7O9E5azuuGrjPfWpcrniP8gqS0BL9Dr0zw/1cK81cGSgBcABfJUgHi9YvychZt+5SkQYEFeCvBOs0tilxA=="
     crossorigin="anonymous"></script>
+  <script src="./cytoscape-navigator.js"></script>
+  <script src="./layout-base.js"></script>
+  <script src="./cose-base.js"></script>
+  <script src="./cytoscape-fcose.js"></script>
   <script>
-      let cy = cytoscape({
-        name: 'duuliy',
-        container: document.getElementById('cy'), //container的值为DOM容器，表示显示图表的位置
-        style: [
-          //设置样式的样式表
-          {
-            selector: 'node', //设置节点样式
-            css: {
-              content: 'data(name)',
-              color: 'white',
-              'text-valign': 'center',
-              'text-outline-color': '#6699FF',
-              'background-color': '#6699FF',
-              height: 60,
-              width: 60,
-              'font-size': '14px',
-              'font-weight': 'bold',
-            },
+    // antv g6 可以让数据保持50w+ 依然不怎么卡 厉害
+    let _nodes = [], _edges = []
+    for (let i = 1; i < 500; i++) {
+      const obj = { data: { id: 'n' + i + 28, name: 'duuliy' + i } }
+      const obj2 = { data: { id: 'e' + i + 27, relationship: '秘密关系', source: 'n2', target: 'n' + i + 28 } }
+      _nodes.push(obj)
+      _edges.push(obj2)
+    }
+
+    let cy = cytoscape({
+      name: 'duuliy',
+      container: document.getElementById('cy'), //container的值为DOM容器，表示显示图表的位置
+      style: [
+        //设置样式的样式表
+        {
+          selector: 'node', //设置节点样式
+          css: {
+            content: 'data(name)',
+            color: 'white',
+            'text-valign': 'center',
+            'text-outline-color': '#6699FF',
+            'background-color': '#6699FF',
+            height: 60,
+            width: 60,
+            'border-width': '2px',
+            'border-color': 'red',
+            'font-size': '14px',
+            'font-weight': 'bold',
           },
-          {
-            selector: 'edge', //设置边的样式
-            css: {
-              content: 'data(relationship)',
-              'curve-style': 'bezier', //曲线类型为贝塞尔曲线
-              'target-arrow-shape': 'triangle',
-              'line-color': '#CCCCCC',
-              width: 1,
-              'font-size': '14px',
+        },
+        {
+          selector: 'node:selected',
+          style: {
+            'color': 'white',
+            'border-color': 'white',
+            'border-opacity': 1,
+            // "background-opacity": .8
+          }
+        }, {
+          selector: '.node-hover',
+          style: {
+            'color': 'green',
+            'border-color': 'green',
+            'border-opacity': 1,
+          }
+        }, {
+          selector: '.node-new',
+          style: {
+            'color': 'green',
+            'border-color': 'green',
+            'border-opacity': .7,
+          }
+        },
+        {
+          selector: 'edge', //设置边的样式
+          css: {
+            content: 'data(relationship)',
+            'curve-style': 'bezier', //曲线类型为贝塞尔曲线
+            'target-arrow-shape': 'triangle',
+            'line-color': '#CCCCCC',
+            width: 1,
+            'target-arrow-color': '#5bc0de',
+            'arrow-scale': 1,
+            'opacity': .7,
+
+            'target-arrow-shape': ele => {
+              return ele.data("type") === 'event' ? 'none' : 'triangle-backcurve'
             },
+
+            "line-style": 'dotted',
+            'line-color': '#5bc0de',
+            'font-size': 6,
+            "font-family": "microsoft yahei",
+            'width': 1,
+            "text-opacity": .8,
+            'text-rotation': 'autorotate',
+            'text-margin-y': 5,
           },
+        },
+        {
+          selector: 'edge:selected',
+          style: {
+            'color': 'white',
+            'line-color': 'white',
+            'target-arrow-color': 'white',
+            'opacity': 1,
+          }
+        },
+        {
+          selector: '.edge-hover',
+          style: {
+            'color': 'green',
+            'line-color': 'green',
+            'target-arrow-color': 'green',
+            'opacity': 1,
+            'width': ele => {
+              return 1
+            },
+          }
+        },
+      ],
+
+      elements: {
+        //初始化元素
+        nodes: [
+          //节点数据
+          { data: { id: 'n1', name: '江户川柯南' } },
+          { data: { id: 'n2', name: '毛利兰' } },
+          { data: { id: 'n3', name: '工藤新一' } },
+          { data: { id: 'n4', name: '工藤优作' } },
+          { data: { id: 'n5', name: '工藤有希子' } },
+          { data: { id: 'n6', name: '毛利小五郎' } },
+          { data: { id: 'n7', name: '妃英理' } },
+          { data: { id: 'n8', name: '铃木园子' } },
+          { data: { id: 'n9', name: '服部平次' } },
+          { data: { id: 'n10', name: '远山和叶' } },
+          { data: { id: 'n11', name: '怪盗基德' } },
+          { data: { id: 'n12', name: '阿笠博士' } },
+          { data: { id: 'n13', name: '目暮警官' } },
+          { data: { id: 'n14', name: '高木警官' } },
+          { data: { id: 'n15', name: '佐藤警官' } },
+          { data: { id: 'n16', name: '白鸟警官' } },
+          { data: { id: 'n17', name: '琴酒' } },
+          { data: { id: 'n18', name: '贝尔摩德' } },
+          { data: { id: 'n19', name: '伏特加' } },
+          { data: { id: 'n20', name: '灰原哀' } },
+          { data: { id: 'n21', name: '赤井秀一' } },
+          { data: { id: 'n22', name: '朱蒂老师' } },
+          { data: { id: 'n23', name: '小岛元太' } },
+          { data: { id: 'n24', name: '吉田步美' } },
+          { data: { id: 'n25', name: '圆谷光彦' } },
+          { data: { id: 'n26', name: '中森警官' } },
+          { data: { id: 'n27', name: '中森青子' } },
+          { data: { id: 'n28', name: '安室透' } },
+          ..._nodes
         ],
+        edges: [
+          //边的数据
+          { data: { id: 'e1', relationship: '照顾xxx', source: 'n2', target: 'n1' } },
+          { data: { id: 'e2', relationship: '情侣', source: 'n2', target: 'n3' } },
+          { data: { id: 'e3', relationship: '父子', source: 'n2', target: 'n4' } },
+          { data: { id: 'e4', relationship: '母子', source: 'n2', target: 'n5' } },
+          { data: { id: 'e5', relationship: '父女', source: 'n2', target: 'n6' } },
+          { data: { id: 'e6', relationship: '母女', source: 'n2', target: 'n7' } },
+          { data: { id: 'e7', relationship: '好友', source: 'n2', target: 'n8' } },
+          { data: { id: 'e8', relationship: '好友', source: 'n2', target: 'n9' } },
+          { data: { id: 'e9', relationship: '情侣', source: 'n2', target: 'n10' } },
+          { data: { id: 'e10', relationship: '亦敌亦友', source: 'n2', target: 'n11' } },
+          { data: { id: 'e11', relationship: '邻居', source: 'n2', target: 'n12' } },
+          { data: { id: 'e12', relationship: '原同事', source: 'n2', target: 'n13' } },
+          { data: { id: 'e13', relationship: '上司', source: 'n2', target: 'n14' } },
+          { data: { id: 'e14', relationship: '相恋', source: 'n2', target: 'n15' } },
+          { data: { id: 'e15', relationship: '单相思', source: 'n2', target: 'n16' } },
+          { data: { id: 'e16', relationship: '寻找下落', source: 'n2', target: 'n17' } },
+          { data: { id: 'e17', relationship: '同伙', source: 'n2', target: 'n18' } },
+          { data: { id: 'e18', relationship: '上司', source: 'n2', target: 'n19' } },
+          { data: { id: 'e19', relationship: '收留', source: 'n2', target: 'n20' } },
+          { data: { id: 'e20', relationship: '追查', source: 'n2', target: 'n21' } },
+          { data: { id: 'e21', relationship: 'FBI同事', source: 'n2', target: 'n22' } },
+          { data: { id: 'e22', relationship: '同学', source: 'n2', target: 'n23' } },
+          { data: { id: 'e23', relationship: '同学', source: 'n2', target: 'n24' } },
+          { data: { id: 'e24', relationship: '同学', source: 'n2', target: 'n25' } },
+          { data: { id: 'e25', relationship: '情侣', source: 'n2', target: 'n26' } },
+          { data: { id: 'e26', relationship: '父女', source: 'n2', target: 'n27' } },
+          { data: { id: 'e27', relationship: '部下', source: 'n2', target: 'n28' } },
+          ..._edges
+          // { data: { id: 'e28', relationship: '追捕', source: 'n26', target: 'n29' } },
+          // { data: { id: 'e29', relationship: '缩小', source: 'n3', target: 'n1' } },
+          // { data: { id: 'e30', relationship: '夫妻', source: 'n4', target: 'n5' } },
+          // { data: { id: 'e31', relationship: '夫妻', source: 'n6', target: 'n7' } },
+          // { data: { id: 'e32', relationship: '同事', source: 'n16', target: 'n13' } },
+          // { data: { id: 'e33', relationship: '背叛', source: 'n20', target: 'n17' } },
+          // { data: { id: 'e34', relationship: '师傅', source: 'n6', target: 'n28' } },
+          // { data: { id: 'e35', relationship: '对手', source: 'n28', target: 'n21' } },
 
-        elements: {
-          //初始化元素
-          nodes: [
-            //节点数据
-            { data: { id: 'n1', name: '江户川柯南' } },
-            { data: { id: 'n2', name: '毛利兰' } },
-            { data: { id: 'n3', name: '工藤新一' } },
-            { data: { id: 'n4', name: '工藤优作' } },
-            { data: { id: 'n5', name: '工藤有希子' } },
-            { data: { id: 'n6', name: '毛利小五郎' } },
-            { data: { id: 'n7', name: '妃英理' } },
-            { data: { id: 'n8', name: '铃木园子' } },
-            { data: { id: 'n9', name: '服部平次' } },
-            { data: { id: 'n10', name: '远山和叶' } },
-            { data: { id: 'n11', name: '怪盗基德' } },
-            { data: { id: 'n12', name: '阿笠博士' } },
-            { data: { id: 'n13', name: '目暮警官' } },
-            { data: { id: 'n14', name: '高木警官' } },
-            { data: { id: 'n15', name: '佐藤警官' } },
-            { data: { id: 'n16', name: '白鸟警官' } },
-            { data: { id: 'n17', name: '琴酒' } },
-            { data: { id: 'n18', name: '贝尔摩德' } },
-            { data: { id: 'n19', name: '伏特加' } },
-            { data: { id: 'n20', name: '灰原哀' } },
-            { data: { id: 'n21', name: '赤井秀一' } },
-            { data: { id: 'n22', name: '朱蒂老师' } },
-            { data: { id: 'n23', name: '小岛元太' } },
-            { data: { id: 'n24', name: '吉田步美' } },
-            { data: { id: 'n25', name: '圆谷光彦' } },
-            { data: { id: 'n26', name: '中森警官' } },
-            { data: { id: 'n27', name: '中森青子' } },
-            { data: { id: 'n28', name: '安室透' } },
-          ],
-          edges: [
-            //边的数据
-            { data: { id: 'e1', relationship: '照顾xxx', source: 'n2', target: 'n2' } },
-            { data: { id: 'e2', relationship: '情侣', source: 'n3', target: 'n2' } },
-            { data: { id: 'e3', relationship: '父子', source: 'n3', target: 'n4' } },
-            { data: { id: 'e4', relationship: '母子', source: 'n3', target: 'n5' } },
-            { data: { id: 'e5', relationship: '父女', source: 'n2', target: 'n6' } },
-            { data: { id: 'e6', relationship: '母女', source: 'n2', target: 'n7' } },
-            { data: { id: 'e7', relationship: '好友', source: 'n2', target: 'n8' } },
-            { data: { id: 'e8', relationship: '好友', source: 'n3', target: 'n9' } },
-            { data: { id: 'e9', relationship: '情侣', source: 'n10', target: 'n9' } },
-            { data: { id: 'e10', relationship: '亦敌亦友', source: 'n3', target: 'n11' } },
-            { data: { id: 'e11', relationship: '邻居', source: 'n3', target: 'n12' } },
-            { data: { id: 'e12', relationship: '原同事', source: 'n13', target: 'n6' } },
-            { data: { id: 'e13', relationship: '上司', source: 'n13', target: 'n14' } },
-            { data: { id: 'e14', relationship: '相恋', source: 'n15', target: 'n14' } },
-            { data: { id: 'e15', relationship: '单相思', source: 'n16', target: 'n15' } },
-            { data: { id: 'e16', relationship: '寻找下落', source: 'n17', target: 'n3' } },
-            { data: { id: 'e17', relationship: '同伙', source: 'n17', target: 'n18' } },
-            { data: { id: 'e18', relationship: '上司', source: 'n17', target: 'n19' } },
-            { data: { id: 'e19', relationship: '收留', source: 'n12', target: 'n20' } },
-            { data: { id: 'e20', relationship: '追查', source: 'n21', target: 'n18' } },
-            { data: { id: 'e21', relationship: 'FBI同事', source: 'n21', target: 'n22' } },
-            { data: { id: 'e22', relationship: '同学', source: 'n1', target: 'n23' } },
-            { data: { id: 'e23', relationship: '同学', source: 'n1', target: 'n24' } },
-            { data: { id: 'e24', relationship: '同学', source: 'n1', target: 'n25' } },
-            { data: { id: 'e25', relationship: '情侣', source: 'n27', target: 'n11' } },
-            { data: { id: 'e26', relationship: '父女', source: 'n27', target: 'n26' } },
-            { data: { id: 'e27', relationship: '部下', source: 'n28', target: 'n17' } },
-            { data: { id: 'e28', relationship: '追捕', source: 'n26', target: 'n11' } },
-            { data: { id: 'e29', relationship: '缩小', source: 'n3', target: 'n1' } },
-            { data: { id: 'e30', relationship: '夫妻', source: 'n4', target: 'n5' } },
-            { data: { id: 'e31', relationship: '夫妻', source: 'n6', target: 'n7' } },
-            { data: { id: 'e32', relationship: '同事', source: 'n16', target: 'n13' } },
-            { data: { id: 'e33', relationship: '背叛', source: 'n20', target: 'n17' } },
-            { data: { id: 'e34', relationship: '师傅', source: 'n6', target: 'n28' } },
-            { data: { id: 'e35', relationship: '对手', source: 'n28', target: 'n21' } },
-          ],
-        },
-        //设置布局
-        layout: {
-          name: 'cose', //布局方式 ｜ avsdf
-        },
-      })
+          // { data: { id: 'e1', relationship: '照顾xxx', source: 'n2', target: 'n2' } },
+          // { data: { id: 'e2', relationship: '情侣', source: 'n3', target: 'n2' } },
+          // { data: { id: 'e3', relationship: '父子', source: 'n3', target: 'n4' } },
+          // { data: { id: 'e4', relationship: '母子', source: 'n3', target: 'n5' } },
+          // { data: { id: 'e5', relationship: '父女', source: 'n2', target: 'n6' } },
+          // { data: { id: 'e6', relationship: '母女', source: 'n2', target: 'n7' } },
+          // { data: { id: 'e7', relationship: '好友', source: 'n2', target: 'n8' } },
+          // { data: { id: 'e8', relationship: '好友', source: 'n3', target: 'n9' } },
+          // { data: { id: 'e9', relationship: '情侣', source: 'n10', target: 'n9' } },
+          // { data: { id: 'e10', relationship: '亦敌亦友', source: 'n3', target: 'n11' } },
+          // { data: { id: 'e11', relationship: '邻居', source: 'n3', target: 'n12' } },
+          // { data: { id: 'e12', relationship: '原同事', source: 'n13', target: 'n6' } },
+          // { data: { id: 'e13', relationship: '上司', source: 'n13', target: 'n14' } },
+          // { data: { id: 'e14', relationship: '相恋', source: 'n15', target: 'n14' } },
+          // { data: { id: 'e15', relationship: '单相思', source: 'n16', target: 'n15' } },
+          // { data: { id: 'e16', relationship: '寻找下落', source: 'n17', target: 'n3' } },
+          // { data: { id: 'e17', relationship: '同伙', source: 'n17', target: 'n18' } },
+          // { data: { id: 'e18', relationship: '上司', source: 'n17', target: 'n19' } },
+          // { data: { id: 'e19', relationship: '收留', source: 'n12', target: 'n20' } },
+          // { data: { id: 'e20', relationship: '追查', source: 'n21', target: 'n18' } },
+          // { data: { id: 'e21', relationship: 'FBI同事', source: 'n21', target: 'n22' } },
+          // { data: { id: 'e22', relationship: '同学', source: 'n1', target: 'n23' } },
+          // { data: { id: 'e23', relationship: '同学', source: 'n1', target: 'n24' } },
+          // { data: { id: 'e24', relationship: '同学', source: 'n1', target: 'n25' } },
+          // { data: { id: 'e25', relationship: '情侣', source: 'n27', target: 'n11' } },
+          // { data: { id: 'e26', relationship: '父女', source: 'n27', target: 'n26' } },
+          // { data: { id: 'e27', relationship: '部下', source: 'n28', target: 'n17' } },
+          // { data: { id: 'e28', relationship: '追捕', source: 'n26', target: 'n11' } },
+          // { data: { id: 'e29', relationship: '缩小', source: 'n3', target: 'n1' } },
+          // { data: { id: 'e30', relationship: '夫妻', source: 'n4', target: 'n5' } },
+          // { data: { id: 'e31', relationship: '夫妻', source: 'n6', target: 'n7' } },
+          // { data: { id: 'e32', relationship: '同事', source: 'n16', target: 'n13' } },
+          // { data: { id: 'e33', relationship: '背叛', source: 'n20', target: 'n17' } },
+          // { data: { id: 'e34', relationship: '师傅', source: 'n6', target: 'n28' } },
+          // { data: { id: 'e35', relationship: '对手', source: 'n28', target: 'n21' } },
+        ],
+      },
+      //设置布局
+      layout: {
+        // name: 'cose', //布局方式 ｜ avsdf
+        name: 'fcose',
+        fit: true,
+        padding: 30,
+        animate: false,
+        nodeSeparation: 225,
+        piTol: 0.0000001,
+        nodeRepulsion: 18000,
+        idealEdgeLength: 100,
+        edgeElasticity: 0.45,
+        nestingFactor: 0.1,
+        tile: false,
+        tilingPaddingVertical: 30,
+        tilingPaddingHorizontal: 30
+      },
+      zoomingEnabled: true,
+      userZoomingEnabled: true,
+      pan: { x: 0, y: 0 },
+      zoom: 1,
+      minZoom: 0.1, //最小值
+      maxZoom: 4, //最大值
+    })
 
-      // 监听节点的点击事件
-      cy.on('tap', 'node', function (evt) {
-        var node = evt.target
-        console.log(evt)
-        console.log('node ' + node.id())
-      })
+    cy.navigator({
+      container: document.getElementById('cy-nav'), // html dom element
+      viewLiveFramerate: 0, // set false to update graph pan only on drag end; set 0 to do it instantly; set a number (frames per second) to update not more than N times per second
+      thumbnailEventFramerate: 30, // max thumbnail's updates per second triggered by graph updates
+      thumbnailLiveFramerate: false, // max thumbnail's updates per second. Set false to disable
+      dblClickDelay: 200, // milliseconds
+      removeCustomContainer: false, // destroy the container specified by user on plugin destroy
+      rerenderDelay: 100, // ms to throttle rerender updates to the panzoom for performance
+    })
 
-      cy.on('tap', 'edges', function (evt) {
-        var node = evt.target
-        console.log('edges ' + node.id())
-      })
+    // 监听节点的点击事件
+    cy.on('tap', 'node', function (evt) {
+      var node = evt.target
+      console.log(evt)
+      console.log('node ' + node.id())
+    })
 
-      //右箭
-      cy.on('cxttap', 'node', function (evt) {
-        var node = evt.target
-        console.log('node ' + node.id())
-      })
+    cy.on('tap', 'edges', function (evt) {
+      var node = evt.target
+      console.log('edges ' + node.id())
+    })
+
+    //右箭
+    cy.on('cxttap', 'node', function (evt) {
+      var node = evt.target
+      console.log('node ' + node.id())
+    })
+
 
   </script>
 </body>
