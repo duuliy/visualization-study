@@ -35,11 +35,11 @@
         default: ['zoom-canvas', 'drag-canvas', 'drag-node'],
       },
       layout: {
-        // type: 'forceAtlas2',
+        type: 'force',
         // preventOverlap: true,
         // kr: 10,
         // center: [250, 250],
-        type: 'random',
+        // type: 'random',
         preventOverlap: true,
         // collideStrength:0.3,
         // alphaMin:0.01,
@@ -63,38 +63,60 @@
     });
 
     let nodes = [], edges = []
-    for (let i = 1; i < 10000; i++) {
-      // const obj = { data: { id: 'n' + i + 28, name: 'duuliy' + i } }
+    const centerX = 284.686, centerY = 253.505
+    const size = 10
+
+    // const getMaxCircular = (r, R) => {
+    //   const pi = 3.1416
+    //   const circulaArea=pi* Math.pow(size/2, 2)
+    //   const ringArea =pi*(Math.pow(R,2)- Math.pow(r, 2))
+    //   return parseInt(ringArea/ circulaArea)
+    // }
+
+    // const helper=(num, r, R )=>{
+
+    //   const layerTotle= getMaxCircular(r,R)
+    //   const surplusNum= num - layerTotle
+    //   if(surplusNum>0){
+    //     helper(surplusNum, R, R + size)
+    //   }
+    // }
+
+    // helper(300, size/2, (size / 2)+size)
+
+
+    for (let i = 1; i < 1000; i++) {
+      // const obj = { data: { id: 'n' + i, name: 'duuliy' + i } }
       // const obj2 = { data: { id: 'e' + i + 27, relationship: '秘密关系', source: 'n2', target: 'n' + i + 28 } }
-      const obj = { id: i + '' }
+      const obj = { id: i + '', x: centerX + i * 10, y: centerY + i * 10 }
       const obj2 = { "source": '1', "target": i + 1 + '', "value": 1 }
       nodes.push(obj)
       edges.push(obj2)
     }
-    // fetch('https://gw.alipayobjects.com/os/antvdemo/assets/data/relations.json')
-    //   .then((res) =>{
-    //     console.log(res.body)
-    //     return res.json()
-    //   })
-    //   .then((data) => {
-    //     console.log(data)
-    //     // data.nodes.forEach(node => {
-    //     //   node.x = Math.random() * 1;
-    //     // });
-    //     graph.on('afterlayout', e => {
-    //       graph.fitView()
-    //     })
-    //     graph.data(data);
-    //     graph.render();
-    //   });
+    fetch('https://gw.alipayobjects.com/os/antvdemo/assets/data/relations.json')
+      .then((res) => {
+        console.log(res.body)
+        return res.json()
+      })
+      .then((data) => {
+        console.log(data)
+        // data.nodes.forEach(node => {
+        //   node.x = Math.random() * 1;
+        // });
+        // graph.on('afterlayout', e => {
+        //   graph.fitView()
+        // })
+        // graph.data(data);
+        // graph.render();
+      });
 
     const data = {
       nodes,
       edges
     }
-    data.nodes.forEach(node => {
-      node.x = Math.random() * 1;
-    });
+    // data.nodes.forEach(node => {
+    //   node.x = Math.random() * 1;
+    // });
     console.log(data)
     graph.on('afterlayout', e => {
       graph.fitView()
