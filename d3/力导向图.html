@@ -59,7 +59,7 @@
     var forceSimulation = d3.forceSimulation()
       .force("link", d3.forceLink()) //创建连接力
       // .force("charge", null) //创建多体力
-      // .force("charge", d3.forceManyBody())
+      .force("charge", d3.forceManyBody())
       .force("center", d3.forceCenter()) //创建一个力中心
       // .stop()
 
