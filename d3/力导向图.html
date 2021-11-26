@@ -61,7 +61,7 @@
       // .force("charge", null) //创建多体力
       .force("charge", d3.forceManyBody())
       .force("center", d3.forceCenter()) //创建一个力中心
-      // .stop()
+    // .stop()
 
     //初始化力导向图，也就是传入数据
     //生成节点数据
@@ -116,7 +116,8 @@
         .on("start", started)
         .on("drag", dragged)
         .on("end", ended)
-      );
+      )
+      // .call(d3.zoom().scaleExtent([3 / 10, 10]).on("zoom", function () { transform = d3.event.transform; render(); }))
 
     //绘制节点
     gs.append("circle")

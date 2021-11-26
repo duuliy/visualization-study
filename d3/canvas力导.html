@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <div class="micro-topo-chart">
+    <canvas id="topo-canvas" class="topo-canvas" width="1200" height="800"></canvas>
+    <div id="topo-tooltip"></div>
+  </div>
+</body>
+<script src="https://cdn.bootcdn.net/ajax/libs/d3/4.9.1/d3.min.js"></script>
+<script>
+  //看样子是canvas画图，d3操作事件
+  function force_zoom_canvas() {
+    // TODO 内部变量
+    const self = this
+    let graph = {},
+      canvas = document.getElementById('topo-canvas'),
+      context = canvas.getContext("2d"),
+      width = document.body.clientWidth || 1200,
+      height = document.body.clientHeight || 800,
+      transform = d3.zoomIdentity,
+      distance = 47,
+      simulation = d3.forceSimulation(),
+      layerColor = [[183, 171, 154], [119, 68, 67], [123, 149, 195], [226, 187, 91], [208, 129, 76], [179, 108, 104], [179, 179, 112]] // 加了level字段，不同等级用不同的颜色表示,用rgb表示是为了后面的高亮显示
+    tooltip = document.getElementById('topo-tooltip')
+    // TODO 配置D3
+    function initialize(nodes, calls) {
+      graph.nodes = nodes;
+      graph.links = calls;
+      const levelMap = {};
+      const resLevel = [];
+      // 根据level 去控制node的x、y
+      graph.nodes.forEach(item => {
+        if (resLevel[item.level]) {
+          resLevel[item.level]++;
+        } else {
+          resLevel[item.level] = 1;
+        }
+      })
+      graph.nodes.forEach((item) => {
+        const index = levelMap[item.level] || 0;
+        // 考虑单双数 对排序的影响
+        if (resLevel[item.level] % 2 !== 0) {
+          item.fx = Math.ceil(index / 2) * (index % 2 ? -1 : 1) * 200 + 700;
+        } else {
+          item.fx = Math.ceil(index / 2) * (index % 2 ? -1 : 1) * 200 + 800;
+        }
+        item.fy = item.level * 200 + 150;
+        levelMap[item.level] = index + 1;
+      });
+      simulation
+        .force("link", d3.forceLink().distance(distance).strength(1).id(function (n) { return n.id; }))
+        .force("charge", d3.forceManyBody())
+        .force("center", d3.forceCenter(width / 2, height / 2))
+        .nodes(graph.nodes)
+        .on("tick", render);
+      simulation.force("link")
+        .links(graph.links);
+      d3.select(canvas)
+        .call(d3.drag().container(canvas).subject(subject_from_event).on("start", drag_started).on("drag", dragged).on("end", drag_ended))
+        .call(d3.zoom().scaleExtent([3 / 10, 10]).on("zoom", function () { transform = d3.event.transform; render(); }))
+        .call(render);
+      d3.select(canvas)
+        .on('mousemove', d3mousemove) // 鼠标移动事件
+        .on('click', d3click) // 监听点击事件
+      function d3mousemove() {
+        const ex = transform.invertX(d3.event.layerX); // 重点 d3.event.layerX，之前tooltip的位置会有偏移，canvas缩小放大后
+        const ey = transform.invertY(d3.event.layerY);
+        const node = simulation.find(ex, ey);
+        if (node && ex > node.x - 90 && ex < node.x + 90 && ey > node.y && ey < node.y + 60) {
+          let text = node.appId + "\n" + node.method
+          tooltip.innerText = text
+          tooltip.style.left = `${transform.applyX(node.x) - (transform.k < 0.5 ? 45 : 90)}px`;
+          tooltip.style.top = `${transform.applyY(node.y) + (node.method ? -60 : -30)}px`;
+          tooltip.style.opacity = 1 // 鼠标放在node上，才显示tooltip
+        } else {
+          tooltip.innerText = ''
+          tooltip.style.opacity = 0 // 鼠标不放在node上，不显示tooltip
+        }
+      }
+      function d3click() {
+        const ex = transform.invertX(d3.event.layerX);
+        const ey = transform.invertY(d3.event.layerY);
+        const node = simulation.find(ex, ey);
+        if (node && ex > node.x - 90 && ex < node.x + 90 && ey > node.y && ey < node.y + 60) {
+          self.$eventBus.$emit('changeEndpointTopoSel', node); // 是为了获取当前node所在链路
+        }
+      }
+      //TODO 图元发现
+      function subject_from_event() {
+        var ex = transform.invertX(d3.event.x),
+          ey = transform.invertY(d3.event.y);
+        var node = simulation.find(ex, ey);
+        if (node && ex > node.x - 90 && ex < node.x + 90 && ey > node.y && ey < node.y + 60) {
+          node.x = transform.applyX(node.x);
+          node.y = transform.applyY(node.y);
+          return node;
+        }
+        return null;
+      }
+      //TODO 图元拖拽
+      function drag_started() {
+        d3.event.subject.fx = transform.invertX(d3.event.x);
+        d3.event.subject.fy = transform.invertY(d3.event.y);
+        if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+        d3.event.sourceEvent.stopPropagation();
+      }
+      function dragged() {
+        d3.event.subject.fx = transform.invertX(d3.event.x);
+        d3.event.subject.fy = transform.invertY(d3.event.y);
+      }
+      function drag_ended() {
+        if (!d3.event.active) simulation.alphaTarget(0);
+      }
+    }
+    // 是否高亮显示link
+    function isChooseLine(link) {
+      return self.datas && self.datas.chooseNodesAndCalls && self.datas.chooseNodesAndCalls.calls.findIndex(item => item.id === link.id) > -1;
+    }
+    // 是否高亮显示node
+    function isChooseNodes(node) {
+      return self.datas && self.datas.chooseNodesAndCalls && self.datas.chooseNodesAndCalls.nodes.findIndex(item => item.id === node.id) > -1;
+    }
+    // TODO 图元渲染
+    function render() {
+      context.save();
+      context.clearRect(0, 0, width, height);
+      context.translate(transform.x, transform.y);
+      context.scale(transform.k, transform.k);
+      graph.links.forEach(function (l) {
+        context.beginPath();
+        // context.setLineDash([8, 8]);
+        context.moveTo(l.source.x, l.source.y);
+        context.quadraticCurveTo((l.source.x + l.target.x) / 2, (l.target.y + l.source.y) / 2 - 80, l.target.x, l.target.y);
+        context.lineTo(l.target.x, l.target.y);
+        const idx = l.source.level % 7;
+        context.strokeStyle = `rgba(${layerColor[idx][0]},${layerColor[idx][1]},${layerColor[idx][2]}, ${isChooseLine(l) ? 1 : 1})`; // 属于当前点击node的链路，高亮显示
+        context.stroke();
+      });
+      graph.nodes.forEach(function (n) {
+        context.fillStyle = "#777";
+        context.beginPath();
+        context.moveTo(n.x, n.y);
+        const idx = n.level % 7;
+        context.fillStyle = `rgba(${layerColor[idx][0]},${layerColor[idx][1]},${layerColor[idx][2]}, ${isChooseNodes(n) ? 1 : 1})`;  // 属于当前点击node的链路，高亮显示
+        context.fillRect(n.x - 90, n.y, 180, 60);
+        context.fill();
+        context.fillStyle = "#fff";
+        context.stroke();
+        context.fillText(n.id && n.id.length > 25 ? `id: ${n.id.substring(0, 25)}...` : `id: ${n.id}`, n.x - 80, n.y + 25);
+        context.fillText(n.level && n.level.length > 25 ? `level: ${n.level.substring(0, 25)}...` : `level: ${n.level}`, n.x - 80, n.y + 40);
+      });
+      context.restore();
+    }
+    // TODO 接口
+    graph = {
+      initialize
+    };
+    return graph;
+  }
+  const init = force_zoom_canvas('topo-canvas');
+  init.initialize([
+    { "id": "1", level: 0 }, { "id": "2", level: 1 }, { "id": "3", level: 1 }, { "id": "4", level: 1 }, { "id": "5", level: 2 }, { "id": "6", level: 2 }, { "id": "7", level: 2 }, { "id": "8", level: 2 }
+  ], [
+    { "source": "1", "target": "2" }, { "source": "1", "target": "3" }, { "source": "1", "target": "4" }, { "source": "2", "target": "5" }, { "source": "3", "target": "5" }, { "source": "3", "target": "6" }, { "source": "3", "target": "8" }, { "source": "4", "target": "7" }
+  ]);
+</script>
+
+</html>

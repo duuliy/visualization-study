@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>canvas 画图, d3操作事件</title>
+  <style lang="css">
+  </style>
+</head>
+
+<body>
+  <svg id='#svgCanvas'></svg>
+  <canvas id='canvas'></canvas>
+  <script type="text/javascript" src="http://d3js.org/d3.v5.min.js"></script>
+  <script src="https://d3js.org/d3-path.v1.min.js"></script>
+  <script>
+
+    //canvas 画图, d3操作事件
+      var canvas = document.getElementById('canvas')
+        canvasCtx = canvas.getContext('2d')
+
+        //  绘制路径，既能适应canvas有能适应svg
+        function drawPath(context) {
+          context.moveTo(10, 10)
+          context.lineTo(110, 150)
+          context.lineTo(210, 10)
+          context.lineTo(310, 150)
+          // context.arc(0, 0, 40, 0, 2 * Math.PI);
+          // context.closePath();
+        }
+
+        //  用canvas绘制图形
+        function drawInCanvas() {
+          drawPath(canvasCtx)
+          canvasCtx.lineWidth = 1
+          canvasCtx.strokeStyle = 'blue'
+          canvasCtx.stroke()
+        }
+
+        //  调用canvas绘制方法
+        drawInCanvas()
+
+
+        const d3mousemove=()=>{
+          console.log('移入了')
+        }
+
+        const d3click = () => {
+            console.log('通过拾取可以获取点击了谁')
+          }
+
+         d3.select(canvas)
+            .on('mousemove', d3mousemove) // 鼠标移动事件
+            .on('click', d3click) // 监听点击事件
+
+
+  </script>
+</body>
+
+</html>
