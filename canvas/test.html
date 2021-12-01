@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>利用webgl渲染引擎加载canvas，提供GPU加速</title>
+</head>
+
+<body>
+  <canvas id="myCanvas" width="1600" height="900" style="border:1px solid #000000;">
+  </canvas>
+  <script src="js/gl-matrix-min.js"></script>
+  <script src="js/litegl.js"></script>
+  <script src="js/Canvas2DtoWebGL.js"></script>
+  <!-- <script src="webgl-test.js" defer></script> -->
+  <script>
+    // console.log(vec3)
+    // console.log(GL)
+    // console.log(enableWebGLCanvas)
+    var canvas = document.getElementById("myCanvas");
+    var ctx = canvas.getContext("2d");
+    // var ctx = canvas.getContext("webgl");
+    // var ctx = enableWebGLCanvas(canvas);
+
+    const render = (x,y) => {
+      ctx.fillStyle = "#FF0000";
+      ctx.fillRect(Math.random()*Math.random()* 5*x, Math.random()*Math.random() * 5*y, 5, 5);
+      // ctx.fillRect(0, 0, 5, 5);
+    }
+
+    for(let i=0;i<100000;i++){
+      render(i,i)
+    }
+
+
+
+    // function main() {
+    //   const canvas = document.querySelector("#myCanvas");
+    //   // 初始化WebGL上下文
+    //   const gl = canvas.getContext("webgl");
+
+    //   // 确认WebGL支持性
+    //   if (!gl) {
+    //     alert("无法初始化WebGL，你的浏览器、操作系统或硬件等可能不支持WebGL。");
+    //     return;
+    //   }
+
+    //   // 使用完全不透明的黑色清除所有图像
+    //   gl.clearColor(0.0, 0.0, 0.0, 1.0);
+    //   // 用上面指定的颜色清除缓冲区
+    //   gl.clear(gl.COLOR_BUFFER_BIT);
+    // }
+
+    // main()
+
+  </script>
+</body>
+
+</html>
