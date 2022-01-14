@@ -284,6 +284,8 @@
       console.log('node ' + node.id())
       // cy.remove(node)  //删除节点
       // cy.add（eleObj)  //添加节点
+      // console.log(cy.elements('node'))  //所有点
+      // console.log(cy.elements('edge'))  //所有边
     })
 
     cy.on('tap', 'edges', function (evt) {
