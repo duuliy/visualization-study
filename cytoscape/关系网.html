@@ -282,6 +282,8 @@
       var node = evt.target
       console.log(evt)
       console.log('node ' + node.id())
+      // cy.remove(node)  //删除节点
+      // cy.add（eleObj)  //添加节点
     })
 
     cy.on('tap', 'edges', function (evt) {
