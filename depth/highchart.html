@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    #container {
+    min-width: 310px;
+    max-width: 1040px;
+    height: 500px;
+    margin: 0 auto;
+}
+  </style>
+</head>
+<body>
+  <div id="container"></div>
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+  <script>
+
+    //绘制大小大小5KB，js 430B
+    //考虑trade34kb ，kline 2.3KB，ok=me 的depthChart.js 9.7KB, bnb的konvajs自研的1.2KB
+    //highcharts 性能和大小均可，注意按需引入
+    //对技术有追求和时间建议自建g（canvas）自研depth
+
+    var chartData = {
+        tickerId: "BTC_USD",
+        timestamp: 1635784328000,
+        bids: [
+          [0.1524, 0.948665],
+          [0.1539, 35.510715],
+          [0.154, 39.883437],
+          [0.1541, 40.499661],
+          [0.1545, 43.262994000000006],
+          [0.1547, 60.14799400000001],
+          [0.1553, 60.30799400000001],
+          [0.1558, 60.55018100000001],
+          [0.1564, 68.381696],
+          [0.1567, 69.46518400000001],
+          [0.1569, 69.621464],
+          [0.157, 70.398015],
+          [0.1574, 70.400197],
+          [0.1575, 73.199217],
+          [0.158, 77.700017],
+          [0.1583, 79.449017],
+          [0.1588, 79.584064],
+          [0.159, 80.584064],
+          [0.16, 81.58156],
+          [0.1608, 83.38156]
+        ],
+        asks: [
+          [0.1435, 242.521842],
+          [0.1436, 206.49862099999999],
+          [0.1437, 205.823735],
+          [0.1438, 197.33275],
+          [0.1439, 153.677454],
+          [0.144, 146.007722],
+          [0.1442, 82.55212900000001],
+          [0.1443, 59.152814000000006],
+          [0.1444, 57.942260000000005],
+          [0.1445, 57.483850000000004],
+          [0.1446, 52.39210800000001],
+          [0.1447, 48.867208000000005],
+          [0.1448, 44.104697],
+          [0.1449, 40.131217],
+          [0.145, 31.878217],
+          [0.1451, 27.794916999999998],
+          [0.1453, 11.345828999999998],
+          [0.1454, 9.035642],
+          [0.148, 5.326642],
+          [0.1522, 3.76317]
+        ]
+      }
+
+      Highcharts.chart('container', {
+        chart: {
+          type: "area",
+          zoomType: "xy",
+          backgroundColor: "#1c1b2b",
+          height: 500,
+        },
+        title: {
+          text: "Market Depth",
+          style: {
+            color: "#fff",
+          },
+        },
+        xAxis: {
+          minPadding: 0,
+          maxPadding: 0,
+          plotLines: [
+            {
+              color: "#2f2952",
+              value: 0.1523,
+              width: 1,
+              label: {
+                text: "Actual price",
+                rotation: 90,
+                style: {
+                  color: "#4F6C89",
+                },
+              },
+            },
+          ],
+          lineWidth: 0.1,
+          tickColor: "#1c1b2b",
+          crosshair: {
+            color: "#696777",
+            dashStyle: "dash",
+          },
+          title: {
+            text: "Price",
+            style: {
+              color: "#4F6C89",
+            },
+          },
+        },
+        yAxis: [
+          {
+            gridLineWidth: 1,
+            title: null,
+            tickWidth: 1,
+            tickLength: 5,
+            tickPosition: "inside",
+            labels: {
+              align: "left",
+              x: 8,
+            },
+            crosshair: {
+              dashStyle: "dash",
+              color: "#696777",
+            },
+            gridLineColor: "#201d3a",
+            lineWidth: 0,
+            tickColor: "#2f2952",
+          },
+          {
+            opposite: true,
+            linkedTo: 0,
+            gridLineWidth: 0,
+            title: null,
+            tickWidth: 1,
+            tickLength: 5,
+            tickPosition: "inside",
+            labels: {
+              align: "right",
+              x: -8,
+            },
+            crosshair: {
+              dashStyle: "dash",
+              color: "#696777",
+            },
+            gridLineColor: "#201d3a",
+            lineWidth: 0,
+            tickColor: "#2f2952",
+          },
+        ],
+        legend: {
+          enabled: false,
+        },
+        plotOptions: {
+          area: {
+            fillOpacity: 0.2,
+            lineWidth: 1,
+            step: "center",
+          },
+          series: {
+            marker: {
+              enabled: false
+            }
+          },
+        },
+        tooltip: {
+          headerFormat:
+            '<span style="font-size=10px;">Price: {point.key}</span><br/>',
+          valueDecimals: 2,
+        },
+        series: [
+          {
+            name: "Bids",
+            data: chartData.bids,
+            color: "#4EA64A",
+          },
+          {
+            name: "Asks",
+            data: chartData.asks,
+            color: "#FB1809",
+          },
+        ],
+        credits: {
+          enabled: false,
+        },
+      });
+
+  </script>
+</body>
+</html>
