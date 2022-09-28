@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en" style="background: #FFFFFF;height: 100%">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="KLineChart example" />
+  <title>trade</title>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/klinecharts@8.5.0/dist/klinecharts.min.js"></script>
+  <script type="text/javascript" src="./kline.js"></script>
+</head>
+
+<body style="margin: 0;height: 100%">
+  <div id="chart" style="height: 100%"></div>
+  <script>
+    //dark
+    let themStyle = 'light'
+    const thems = {
+      light: {
+        bgColor: 'white',
+        txtColor: 'black',
+        axisColor: '#888888',
+        gridColor: '#d6d6d6',
+        crosshairColor: '#888888',
+        tooltipBgColor: '#FFFFFF',
+        upColor:"#26A69A",
+        downColor:"#EF5350"
+      },
+      dark: {
+        bgColor: 'black',
+        txtColor: 'white',
+        axisColor: 'white',
+        gridColor: 'white',
+        crosshairColor: 'white',
+        tooltipBgColor: 'white',
+        upColor:"#26A69A",
+        downColor:"#EF5350"
+      }
+    }
+    const _thems = thems[themStyle]
+
+    const options = {
+      // 网格线
+      grid: {
+        horizontal: {
+          color: _thems.gridColor,
+        },
+        vertical: {
+          color: _thems.gridColor,
+        }
+      },
+      // 蜡烛图
+      candle: {
+        // 蜡烛图上下间距，大于1为绝对值，大于0小余1则为比例
+        margin: {
+          top: 0.2,
+          bottom: 0.1
+        },
+        // 蜡烛图类型 'candle_solid'|'candle_stroke'|'candle_up_stroke'|'candle_down_stroke'|'ohlc'|'area'
+        type: 'candle_solid', //area
+        // 蜡烛柱
+        bar: {
+          upColor: _thems.upColor,
+          downColor: _thems.downColor,
+          noChangeColor: 'green',
+        },
+        // 面积图
+        area: {
+          lineColor: '#1890FF'
+        },
+        priceMark: {
+          // 最高价标记
+          high: {
+            color: _thems.txtColor,
+            textSize: 10,
+            textFamily: 'Helvetica Neue',
+          },
+          // 最低价标记
+          low: {
+            color: _thems.txtColor,
+            textSize: 10,
+            textFamily: 'Helvetica Neue',
+          },
+          // 最新价标记
+          last: {
+            upColor: _thems.upColor,
+            downColor: _thems.downColor,
+            line: {
+              show: false,
+            },
+            text: {
+              paddingInlineStart: 8,
+            }
+          }
+        },
+        // 提示
+        tooltip: {
+          labels: ['时间', '开', '收', '高', '低', '成交'],
+          values: null,
+          text: {
+            size: 12,
+            marginInlineStart: 10,
+            marginTop: 2,
+            marginInlineEnd: 0,
+            marginBottom: 0,
+          },
+        }
+      },
+      // 技术指标
+      technicalIndicator: {
+        margin: {
+          top: 20,
+          bottom: 0.1
+        },
+        bar: {
+          upColor: '#26A69A',
+          downColor: '#EF5350',
+          noChangeColor: '#888888',
+        },
+        line: {
+          size: 1,
+          colors: ['#FF9600', '#9D65C9', '#2196F3', '#E11D74', '#01C5C4']
+        },
+        circle: {
+          upColor: _thems.upColor,
+          downColor: _thems.downColor,
+        },
+        tooltip: {
+          showParams: false,
+          text: {
+            size: 12,
+            color: _thems.txtColor,
+            marginTop: 3,
+            marginInlineEnd: 0,
+            marginBottom: 0,
+            marginInlineStart: 10
+          }
+        }
+      },
+      // x轴
+      xAxis: {
+        axisLine: {
+          color: _thems.axisColor,
+        },
+        tickText: {
+          color: _thems.txtColor
+        },
+        tickLine: {
+          color: _thems.axisColor
+        }
+      },
+      // y轴
+      yAxis: {
+        axisLine: {
+          color: _thems.axisColor,
+        },
+        tickText: {
+          color: _thems.txtColor
+        },
+        tickLine: {
+          color: _thems.axisColor
+        }
+      },
+      // 图表之间的分割线
+      separator: {
+        color: _thems.axisColor,
+        fill: true,
+        activeBackgroundColor: 'rgba(230, 230, 230, .15)'
+      },
+      // 十字光标
+      crosshair: {
+        horizontal: {
+          line: {
+            color: _thems.crosshairColor,
+          }
+        },
+        vertical: {
+          line: {
+            color: _thems.crosshairColor,
+          }
+        }
+      },
+    }
+
+    window.onload = function () {
+      //指标设置
+      // 初始化图表
+      var chart = klinecharts.init('chart', options)
+      // 创建一个主图技术指标
+      chart.createTechnicalIndicator('MA', false, { id: 'candle_pane' })
+      // 创建一个副图技术指标VOL
+      chart.createTechnicalIndicator('VOL')
+      // 创建一个副图技术指标MACD
+      chart.createTechnicalIndicator('MACD')
+      // 加载数据
+      var chartDataList = kLineDataList.map(function (data) {
+        return {
+          timestamp: new Date(data[0]).getTime(),    //时间根据数据自动显示
+          open: +data[1],
+          high: +data[2],
+          low: +data[3],
+          close: +data[4],
+          volume: Math.ceil(+data[5]),
+        }
+      })
+      chart.applyNewData(chartDataList)
+    }
+  </script>
+</body>
+
+</html>
